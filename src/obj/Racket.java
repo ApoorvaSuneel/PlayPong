@@ -15,12 +15,21 @@ import javax.swing.JFrame;
  */
 public class Racket extends Sprite {
     private final JFrame game;
-
-    public Racket(JFrame game, int y) {
-        super((game.getWidth()- 60) / 2, y, 0, 0, 60, 10);
+    int direction;
+    public Racket(int x, int y,int vx,int vy,int w,int h,JFrame game,int motion) {
+        super(x, y, vx, vy, w, h);
+        direction=motion;
         this.game = game;
     }
-
+     
+    public void setCompu(Ball ball,int dir)
+    {
+        
+    }
+    public int getdir()
+    {
+        return direction;
+    }
     public void pressed(KeyEvent e) {
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_LEFT)

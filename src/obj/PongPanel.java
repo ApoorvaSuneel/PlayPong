@@ -47,8 +47,10 @@ static int port;
 static Thread t1,t2;
 public PongPanel(Pong game) {
    
-    racket = new Racket(game.getFrame(), game.getFrame().getHeight()-50);
-    racket2 = new Racket(game.getFrame(), 0);
+    int u1=game.getFrame().getWidth();
+    int u2=game.getFrame().getHeight();
+    racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame());
+    racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame());
     ball = new Ball(0,0);
     a=1;
     b=0;
