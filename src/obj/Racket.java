@@ -21,10 +21,80 @@ public class Racket extends Sprite {
         direction=motion;
         this.game = game;
     }
-     
-    public void setCompu(Ball ball,int dir)
+     //for each racket
+    public void setCompu(Ball ball,int dir,int rac)
     {
-        
+        //how to set compu?
+        if(dir==1)
+        {
+            //horizontal
+            int xb=ball.getX();
+            int xr=this.getX();
+            int xyb=ball.getXA();
+            int xyr=this.getXA();
+            if(xr+70<xb || xb<xr-ball.getWidth())
+            {
+             this.setYA(0);
+             this.setXA(ball.getXA());    
+            }
+            else
+            {
+             this.setYA(0);
+             this.setXA(ball.getXA());     
+            }   
+            
+            
+        }
+        else
+        {
+            //vertical
+             int yb=ball.getY();
+            int yr=this.getY();
+            int vyb=ball.getYA();
+            int vxb=ball.getXA();
+            int vyr=this.getYA();
+            if(rac==3)
+            {
+                if(vxb<0)
+                {
+                 if(yr+70<yb || yb<yr-ball.getWidth())
+            {
+             this.setXA(0);
+             this.setYA(ball.getYA());    
+            }
+            else
+            {
+             this.setXA(0);
+             this.setYA(ball.getYA());     
+            }      
+                }
+                
+            }
+            else if(rac==4)
+            {
+             if(vxb>0)
+                {
+                 if(yr+70<yb || yb<yr-ball.getWidth())
+            {
+             this.setXA(0);
+             this.setYA(ball.getYA());    
+            }
+                 else 
+            {
+             this.setXA(0);
+             this.setYA(ball.getYA());     
+            }      
+                }   
+                
+            }
+            else
+            {
+                
+            }
+           
+            
+            
+        }
     }
     public int getdir()
     {
@@ -48,6 +118,11 @@ public class Racket extends Sprite {
         if (getX() + getXA() >= 0 && getX() + getXA() < game.getWidth() - getWidth())
             setX(getX() + getXA());
     }
+     public void updatePosition1() {
+        if (getY() + getYA() >= 0 && getY() + getYA() < game.getHeight()- getHeight())
+            setY(getY() + getYA());
+    }
+
 
     public void paint(Graphics g) {
         g.fillRect(getX(), getY(), getWidth(), getHeight());

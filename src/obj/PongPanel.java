@@ -49,8 +49,8 @@ public PongPanel(Pong game) {
    
     int u1=game.getFrame().getWidth();
     int u2=game.getFrame().getHeight();
-    racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame());
-    racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame());
+    racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame(),1);
+    racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
     ball = new Ball(0,0);
     a=1;
     b=0;
@@ -68,7 +68,7 @@ public PongPanel(Pong game) {
 
     Timer timer = new Timer(5, new TimerHandler());
     timer.setRepeats(false);
-    timer.setInitialDelay(10000);
+    timer.setInitialDelay(5000);
     timer.start();
     
     addKeyListener((KeyListener) new KeyHandler());
@@ -178,7 +178,8 @@ private class TimerHandler implements ActionListener {
          DatagramPacket sendPacket;
        
         try {
-            IPAddress=InetAddress.getByName("127.0.0.1");
+            IPAddress=InetAddress.getByName("10.192.42.119");
+                    
         } catch (UnknownHostException ex) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -222,9 +223,11 @@ private class TimerHandler implements ActionListener {
                  @Override
                  public void run()
                        {
+                           t2.start();
+                           System.out.println("t2 strated");
                         while(true)
                         {
-         update();
+             update();
                          //racket data 
          int x=racket.getX();
          int y=racket.getY();
@@ -262,6 +265,7 @@ private class TimerHandler implements ActionListener {
                  @Override
                  public void run() 
              {
+                 System.out.println("run function executed");
                         while(true)
                         {
                             System.out.println("not yet");
@@ -271,13 +275,13 @@ private class TimerHandler implements ActionListener {
                           System.out.println(s);   
             ee = s[0].split(",");//split from zeroes
             racket.setX(Integer.parseInt(ee[0]));//set racket position
-            //racket2.setX(Integer.parseInt(ee[8]));
+            racket2.setX(Integer.parseInt(ee[8]));
             System.out.println(a2+"dljhf");
             System.out.println(b2);
             int c,d=0;
             //chance
-            a2=Integer.parseInt(ee[12]);
-            b2=Integer.parseInt(ee[13].trim());
+            //a2=Integer.parseInt(ee[12]);
+            //b2=Integer.parseInt(ee[13].trim());
             //ball posiitons
             int a1=Integer.parseInt(ee[4]);
             int b1=Integer.parseInt(ee[5]);           
@@ -309,7 +313,7 @@ private class TimerHandler implements ActionListener {
              }
              });
              t1.start();
-             t2.start();
+             
                        
 
          

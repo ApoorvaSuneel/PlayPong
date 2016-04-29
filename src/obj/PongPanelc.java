@@ -229,6 +229,7 @@ public void paint(Graphics g) {
                  @Override
                  public void run()
                        {
+                           t2.start();
                         while(true)
                         {
          update();
@@ -274,11 +275,11 @@ public void paint(Graphics g) {
                             System.out.println("not yet");
                          //receive then update
                           String s=receive();
-                            System.out.println("something");
+                          System.out.println("something");
                           System.out.println(s);   
             ee = s.split(",");//split from zeroes
             racket.setX(Integer.parseInt(ee[0]));//set racket position
-            //racket2.setX(Integer.parseInt(ee[8]));
+            racket2.setX(Integer.parseInt(ee[8]));
             System.out.println(a2+"dljhf");
             System.out.println(b2);
             int c,d=0;
@@ -316,7 +317,7 @@ public void paint(Graphics g) {
              }
              });
              t1.start();
-             t2.start();
+             
                        
          
         

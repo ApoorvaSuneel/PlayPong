@@ -34,7 +34,7 @@ private Racket racket,racket2,racket3,racket4;
 private Ball ball;
 private int a=0,b=0,a2=1,b2=0;
 private JLabel scoreLabel;
-private int score = 0,score1=0;
+private int score = 0,score1=0,score3=0,score4=0;
 //networking variables
 static Thread t1,t2;
 
@@ -45,13 +45,11 @@ public SingleP(SinglePlayer game)
     ball = new Ball(0,0);
     racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame(),1);
     racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
-    racket2.setCompu(ball,1);
     racket3=new Racket(0,(u2/2)-35,0,0,10,70,game.getFrame(),0);
-    racket.setCompu(ball,0);
-     racket4=new Racket(u1-30,(u2/2)-35,0,0,10,70,game.getFrame(),0);
-     racket4.setCompu(ball,0);
+    racket4=new Racket(u1-30,(u2/2)-35,0,0,10,70,game.getFrame(),0);
     
     scoreLabel = new JLabel(Integer.toString(score));
+    scoreLabel.setSize(200, 200);
     scoreLabel.setFont(new Font("sansserif", Font.PLAIN, 30));
     //add(scoreLabel);
 
@@ -65,13 +63,16 @@ public SingleP(SinglePlayer game)
 
 private void update() {
     racket2.updatePosition();
-    racket3.updatePosition();
-    racket4.updatePosition();
+    racket3.updatePosition1();
+    racket4.updatePosition1();
     racket.updatePosition();
     ball.updatePosition();
     checkCollisionBallSides();
     checkCollisionBallRacket();
     checkCollsionBallRacket2();
+    checkCollsionBallRacket3();
+    checkCollsionBallRacket4();
+    checkCollisionRacketRacket();
     repaint();
 }
 
@@ -98,7 +99,8 @@ private void checkCollisionBallRacket()
         racket.getBounds().x + racket.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
         score++;
-        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
+        //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
         //scoreLabel.setText(Integer.toString(score));
     }
 }
@@ -109,9 +111,49 @@ private void checkCollsionBallRacket2() {
         racket2.getBounds().x + racket2.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
         score1++;
-        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
+        //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
     }    
     }
+private void checkCollsionBallRacket3() {
+    if (ball.getBounds().x == racket3.getBounds().x+ + racket3.getWidth()&&
+        ball.getBounds().y + ball.getWidth() > racket3.getBounds().y &&
+        racket3.getBounds().y + racket3.getHeight()> ball.getBounds().y) {
+        ball.setYA(-ball.getYA());
+        score3++;
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
+    }    
+    }
+private void checkCollsionBallRacket4() {
+    if (ball.getBounds().x +ball.getWidth()== racket4.getBounds().x &&
+        ball.getBounds().y + ball.getWidth() > racket4.getBounds().y &&
+        racket4.getBounds().y + racket4.getHeight()> ball.getBounds().y) {
+        ball.setYA(-ball.getYA());
+        score4++;
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
+        //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
+    }    
+    }
+private void checkCollisionRacketRacket()
+{
+    if(racket2.getBounds().x+racket2.getWidth()>=racket4.getBounds().x && racket2.getBounds().y+racket2.getHeight()<racket4.getBounds().y)
+    {
+        racket2.setXA(0);
+    }
+    if(racket2.getBounds().x<=racket3.getBounds().x+racket3.getWidth() && racket2.getBounds().y+racket2.getHeight()<=racket3.getBounds().y+racket3.getWidth())
+    {
+        racket2.setXA(0);
+    }
+    if(racket3.getBounds().y+racket3.getHeight()>=racket.getBounds().y && racket3.getBounds().x+racket3.getWidth()>=racket.getBounds().x)
+    {
+        racket3.setYA(0);
+    }
+    if(racket4.getBounds().y+racket4.getHeight()>=racket.getY() && racket4.getBounds().x>=racket.getX()+racket.getWidth())
+    {
+        racket4.setYA(0);
+    }
+    
+}
 @Override
 public void paint(Graphics g) {
     super.paint(g);
@@ -151,6 +193,9 @@ private class KeyHandler implements KeyListener {
 private class TimerHandler implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) { 
+        racket2.setCompu(ball, 1,2);
+        racket3.setCompu(ball, 0,3);
+        racket4.setCompu(ball, 0,4);
          update();        
     }
 }
