@@ -19,6 +19,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -33,14 +34,15 @@ import javax.swing.Timer;
 //contains the two components ball and paddle
 
 public class PongPanel extends JPanel{
-private Racket racket,racket2;
+private Racket racket,racket2,racket3,racket4;
 private Ball ball;
-private int a=0,b=0,a2=1,b2=0;
+private int a=0,b=0,c=0,d=0;
 private String[] ee;
-private JLabel scoreLabel;
-private int score = 0,score1=0;
+private static ArrayList ip,portnum;
+private JLabel scoreLabel;                         //----------------------------------
+private int score = 0,score1=0,score2=0,score3=0;
 //networking variables
-static DatagramSocket ps;
+static DatagramSocket DataSoc;
 static byte[] rdata,sdata;
 static InetAddress IPAddress;
 static int port;
@@ -51,14 +53,20 @@ public PongPanel(Pong game) {
     int u2=game.getFrame().getHeight();
     racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame(),1);
     racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
-    ball = new Ball(0,0);
-    a=1;
+    racket3=new Racket(0,(u2/2)-35,0,0,10,70,game.getFrame(),0);
+    racket4=new Racket(u1-30,(u2/2)-35,0,0,10,70,game.getFrame(),0);
+    ball = new Ball(u1/2,u2/2);
+    
+    
+    
+    
+    a=1;                           //-------------------------------------------------------------
     b=0;
     scoreLabel = new JLabel(Integer.toString(score));
-    scoreLabel.setFont(new Font("sansserif", Font.PLAIN, 30));
+    scoreLabel.setFont(new Font("sansserif", Font.PLAIN, 30));  //----------------------------------
     
         try {
-            ps=new DatagramSocket(5151);
+            DataSoc=new DatagramSocket(5151);
         } catch (SocketException ex) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,7 +79,7 @@ public PongPanel(Pong game) {
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
                
         try {
-            ps.receive(receivePacket);
+            DataSoc.receive(receivePacket);
         } catch (IOException ex) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -82,6 +90,16 @@ public PongPanel(Pong game) {
     //add(scoreLabel);
    
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     Timer timer = new Timer(5, new TimerHandler());
     timer.setRepeats(false);
@@ -199,7 +217,7 @@ private class TimerHandler implements ActionListener {
             sendPacket = new DatagramPacket(sdata, sdata.length,IPAddress  ,5150);  
         
         try {
-            ps.send(sendPacket);
+            DataSoc.send(sendPacket);
         } catch (IOException ex) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -210,7 +228,7 @@ private class TimerHandler implements ActionListener {
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
                
         try {
-            ps.receive(receivePacket);
+            DataSoc.receive(receivePacket);
         } catch (IOException ex) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -223,7 +241,7 @@ private class TimerHandler implements ActionListener {
             h[0]=modifiedSentence;
             h[1]=IPAddress.toString();
             h[2]=""+port;
-            return h;       
+            return h;           
     }
     
     @Override
@@ -288,8 +306,6 @@ private class TimerHandler implements ActionListener {
             ee = s[0].split(",");//split from zeroes
             racket.setX(Integer.parseInt(ee[0]));//set racket position
             racket2.setX(Integer.parseInt(ee[8]));
-            System.out.println(a2+"dljhf");
-            System.out.println(b2);
             int c,d=0;
             //chance
             //a2=Integer.parseInt(ee[12]);

@@ -106,13 +106,36 @@ public class GameMenu extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         //multiplayer
+        if(jButton2.getText().equals("JOIN GAME"))
+        {
+              changeB1();  
+        }
+        else
+        {
+        
+            jButton3.setVisible(false);
+            jButton2.setText("JOIN GAME");
+            jButton1.setText("START A GAME");
+            
+        }
+        
         
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         //single player
-        new SinglePlayer();
+        if(!jButton1.getText().equals("START A GAME"))
+        {
+              new SinglePlayer(); 
+        }
+        else
+        {
+        
+           changeB2();
+            
+        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -162,4 +185,17 @@ public class GameMenu extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+
+    private void changeB1() {
+       
+         new ClientC().setVisible(true);
+         this.setVisible(false);
+       
+    }
+
+    private void changeB2() {
+         new ServerC().setVisible(true);
+         this.setVisible(false);
+        
+    }
 }
