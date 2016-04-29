@@ -136,8 +136,6 @@ private void checkCollisionBallRacket() {
         ball.getBounds().x + ball.getWidth() > racket.getBounds().x &&
         racket.getBounds().x + racket.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
-        a=0;
-        b=1;
         score++;
         scoreLabel.setText(Integer.toString(score));
     }
@@ -157,8 +155,6 @@ public void paint(Graphics g) {
         racket2.getBounds().x + racket2.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
         score1++;
-        a=1;
-        b=0;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
     }    
     }

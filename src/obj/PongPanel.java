@@ -54,16 +54,33 @@ public PongPanel(Pong game) {
     ball = new Ball(0,0);
     a=1;
     b=0;
+    scoreLabel = new JLabel(Integer.toString(score));
+    scoreLabel.setFont(new Font("sansserif", Font.PLAIN, 30));
+    
         try {
             ps=new DatagramSocket(5151);
         } catch (SocketException ex) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-    scoreLabel = new JLabel(Integer.toString(score));
-    scoreLabel.setFont(new Font("sansserif", Font.PLAIN, 30));
+         rdata=new byte[1024];
+         sdata=new byte[1024];
+      
+    addKeyListener((KeyListener) new KeyHandler());
+    setFocusable(true);
+      //wait for client to shake
+        DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
+               
+        try {
+            ps.receive(receivePacket);
+        } catch (IOException ex) {
+            Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+           String modifiedSentence = new String(receivePacket.getData());  
+           System.out.println("FROM CLIENT:" + modifiedSentence); 
+        
     //add(scoreLabel);
-    rdata=new byte[1024];
-    sdata=new byte[1024];
+   
 
 
     Timer timer = new Timer(5, new TimerHandler());
@@ -71,8 +88,7 @@ public PongPanel(Pong game) {
     timer.setInitialDelay(5000);
     timer.start();
     
-    addKeyListener((KeyListener) new KeyHandler());
-    setFocusable(true);
+    
 }
 
 private void update() {
@@ -107,8 +123,6 @@ private void checkCollisionBallRacket()
         ball.getBounds().x + ball.getWidth() > racket.getBounds().x &&
         racket.getBounds().x + racket.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
-        a=0;
-        b=1;
         score++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
         //scoreLabel.setText(Integer.toString(score));
@@ -122,8 +136,6 @@ private void checkCollsionBallRacket2() {
         racket2.getBounds().x + racket2.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
         score1++;
-        a=1;
-        b=0;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
     }    
     }
@@ -217,9 +229,9 @@ private class TimerHandler implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         //networking part to be sent every 5 seconds 
-        
-        
-                    t1=new Thread(new Runnable() {
+                   
+               
+                 t1=new Thread(new Runnable() {
                  @Override
                  public void run()
                        {
