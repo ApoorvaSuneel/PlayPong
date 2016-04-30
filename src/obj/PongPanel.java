@@ -76,6 +76,13 @@ public PongPanel(Pong game) {
     addKeyListener((KeyListener) new KeyHandler());
     setFocusable(true);
       //wait for client to shake
+        
+    
+    
+    //get all the data of the clients to be playing the game in a loop and make a list.
+    int number=Integer.parseInt(ServerC.num);
+    for(int i=0;i<number;i++)
+    {
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
                
         try {
@@ -84,32 +91,95 @@ public PongPanel(Pong game) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
             
-           String modifiedSentence = new String(receivePacket.getData());  
+           String modifiedSentence = new String(receivePacket.getData()); 
+           //get proper data and set the rackets
            System.out.println("FROM CLIENT:" + modifiedSentence); 
+           //get ip add
+           IPAddress=receivePacket.getAddress();
+           ip.add(IPAddress);
+           //get port
+           port=receivePacket.getPort();
+           portnum.add(port);
+    
+         }
+    
+    try {
+        //add your data in the list
+        IPAddress=InetAddress.getByName(ServerC.ipaddress);
+    } catch (UnknownHostException ex) {
+        Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    ip.add(IPAddress);
+    port=5151;
+    portnum.add(port);
+    
+    
+    //send the data of all players to all the clients
+    
+    
+    //read all the ipaddresses as stings
+    String ipadd="";
+    for(Object d:ip)
+    {
+        ipadd=ipadd+d.toString()+",";
+    }
+    ipadd=ipadd.substring(0,ipadd.length()-1);
+    
+    
+    //read all the ports
+     String ports="";
+    for(Object d:portnum)
+    {
+        ports=ports+d.toString()+",";
+    }
+    ports=ports.substring(0,ports.length()-1);
+    
+    
+    //send above strings to clients
+    
+    for(int y=0;y<number;y++)
+    {
+        sdata = ipadd.getBytes();  //ipaddresses
+        byte[] sdata1=ports.getBytes(); //ports
+        byte[] sdata2=Integer.toString(y).getBytes(); //player number
+        //send to server only
+         DatagramPacket sendPacket;
+         DatagramPacket sendPacket1;   
+         DatagramPacket sendPacket2;
         
-    //add(scoreLabel);
-   
-
+        //send to each client
+        
+            sendPacket = new DatagramPacket(sdata, sdata.length,(InetAddress)ip.get(y), (int)portnum.get(y));  
+            sendPacket1=new DatagramPacket(sdata1, sdata1.length, (InetAddress)ip.get(y), (int)portnum.get(y));
+            sendPacket2=new DatagramPacket(sdata2, sdata2.length, (InetAddress)ip.get(y), (int)portnum.get(y));
+        
+        try {
+            DataSoc.send(sendPacket);
+            DataSoc.send(sendPacket1);
+            DataSoc.send(sendPacket2);
+        } catch (IOException ex) {
+            Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    //remove yourself from list
+    ip.remove(ip.size()-1);
+    portnum.remove(portnum.size()-1);
     
     
     
-    
-    
-    
-    
-    
-    
-    
-
     Timer timer = new Timer(5, new TimerHandler());
     timer.setRepeats(false);
     timer.setInitialDelay(5000);
-    timer.start();
+    //timer.start();
     
     
 }
 
-private void update() {
+private void update() {//--------------------------------
+    racket3.updatePosition();
+    racket4.updatePosition();
     racket2.updatePosition();
     racket.updatePosition();
     ball.updatePosition();
@@ -163,6 +233,8 @@ private void checkCollsionBallRacket2() {
 public void paint(Graphics g) {
     super.paint(g);
     racket2.paint(g);
+    racket3.paint(g);
+    racket4.paint(g);
     racket.paint(g);
     ball.paint(g);
 }
@@ -190,7 +262,6 @@ private class KeyHandler implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         racket.released(e);
-        racket2.released(e);
     }
 
     @Override
@@ -204,27 +275,29 @@ private class TimerHandler implements ActionListener {
     private void send(String s)
     {
         sdata = s.getBytes();  
-        //send to server only
+        
+        //send in loop to each client
+        for(int y1=0;y1<ip.size();y1++)
+    { 
+        IPAddress=(InetAddress)ip.get(y1);
+        port=(int) portnum.get(y1);
+        
          DatagramPacket sendPacket;
-       
-        try {
-            IPAddress=InetAddress.getByName("10.192.42.119");
-                    
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
         
-            sendPacket = new DatagramPacket(sdata, sdata.length,IPAddress  ,5150);  
+        //send to each client
         
+            sendPacket = new DatagramPacket(sdata, sdata.length,IPAddress, port);  
         try {
             DataSoc.send(sendPacket);
         } catch (IOException ex) {
             Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+        
+    }    }
     
     private String[] receive()
-    {
+    {       
+        
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
                
         try {
@@ -259,25 +332,33 @@ private class TimerHandler implements ActionListener {
                         {
              update();
                          //racket data 
-         int x=racket.getX();
-         int y=racket.getY();
-         int vx=racket.getXA();
-         int vy=racket.getYA();
+         int x1=racket.getX();
+         int y1=racket.getY();
+         int vx1=racket.getXA();
+         int vy1=racket.getYA();
          //racket2 data
          int x2=racket2.getX();
          int y2=racket2.getY();
          int vx2=racket2.getXA();
          int vy2=racket2.getYA();
+         //racket3 data
+         int x3=racket3.getX();
+         int y3=racket3.getY();
+         int vx3=racket3.getXA();
+         int vy3=racket3.getYA();
+         //racket4 data
+         int x4=racket4.getX();
+         int y4=racket4.getY();
+         int vx4=racket4.getXA();
+         int vy4=racket4.getYA();
+         
           //ball data
-         int x1=ball.getX();
-         int y1=ball.getY();
-         int vx1=ball.getXA();
-         int vy1=ball.getYA();
-         //chance data
-         int a1r=a;
-         int b1r=b;
-        //create a string in order r,ball,r2,chance
-         String capitalizedSentence = x+","+y+","+vx+","+vy+","+x1+","+y1+","+vx1+","+vy1+","+x2+","+y2+","+vx2+","+vy2+","+a1r+","+b1r;  
+         int x=ball.getX();
+         int y=ball.getY();
+         int vx=ball.getXA();
+         int vy=ball.getYA();
+        //create a string in order ball,r1,r2,r3,r4
+         String capitalizedSentence = x+","+y+","+vx+","+vy+","+x1+","+y1+","+vx1+","+vy1+","+x2+","+y2+","+vx2+","+vy2+","+x3+","+y3+","+vx3+","+vy3+","+x4+","+y4+","+vx4+","+vy4;  
         send(capitalizedSentence);
                             System.out.println("sent data to client"+capitalizedSentence);
                             try {
@@ -288,6 +369,8 @@ private class TimerHandler implements ActionListener {
                        }
                        }
              });
+                 
+                 
              
              //receive thread
              t2=new Thread(new Runnable() 
@@ -304,31 +387,33 @@ private class TimerHandler implements ActionListener {
                             System.out.println("something");
                           System.out.println(s);   
             ee = s[0].split(",");//split from zeroes
-            racket.setX(Integer.parseInt(ee[0]));//set racket position
+            racket.setX(Integer.parseInt(ee[4]));//set racket position
             racket2.setX(Integer.parseInt(ee[8]));
+            racket3.setY(Integer.parseInt(ee[13]));
+            racket4.setY(Integer.parseInt(ee[17]));
             int c,d=0;
             //chance
             //a2=Integer.parseInt(ee[12]);
             //b2=Integer.parseInt(ee[13].trim());
             //ball posiitons
-            int a1=Integer.parseInt(ee[4]);
-            int b1=Integer.parseInt(ee[5]);           
-            if(ee[6].charAt(0)=='-')
+            int a1=Integer.parseInt(ee[0]);
+            int b1=Integer.parseInt(ee[1]);           
+            if(ee[2].charAt(0)=='-')
             {    
-                c=(-1)*Integer.parseInt(ee[6].substring(1));
+                c=(-1)*Integer.parseInt(ee[2].substring(1));
             }
             else
             {
-                c=Integer.parseInt(ee[6]);
+                c=Integer.parseInt(ee[2]);
             }
             
-             if(ee[7].trim().charAt(0)=='-')
+             if(ee[3].trim().charAt(0)=='-')
             {                   
-                d=(-1)*Integer.parseInt(ee[7].trim().substring(1));
+                d=(-1)*Integer.parseInt(ee[3].trim().substring(1));
             }
             else
             {
-                d=Integer.parseInt(ee[7].trim());
+                d=Integer.parseInt(ee[3].trim());
             }
              
             ball.setX(a1);
