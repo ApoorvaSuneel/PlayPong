@@ -86,14 +86,12 @@ public PongPanel(Pong game) {
     
     //get all the data of the clients to be playing the game in a loop and make a list.
     int number=Integer.parseInt(ServerC1.num);
-<<<<<<< HEAD
     freq=new int[number];
     System.out.println(number);
     int j=0;
     while(j<number)
-=======
     for(int i=0;i<number;i++)
->>>>>>> c9aa9f2cdc3ac74ef4cf978cc857b6139f242aec
+
     {
         System.out.println(j);
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 

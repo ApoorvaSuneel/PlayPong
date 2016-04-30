@@ -56,11 +56,8 @@ public PongPanelc(Pongc game) {
     iplist=new ArrayList<InetAddress>();
     portlist=new ArrayList<Integer>();  
     racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame(),1);
-<<<<<<< HEAD
-    racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
-=======
+
     racket2=new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
->>>>>>> c9aa9f2cdc3ac74ef4cf978cc857b6139f242aec
     racket3=new Racket(0,(u2/2)-35,0,0,10,70,game.getFrame(),0);
     racket4=new Racket(u1-30,(u2/2)-35,0,0,10,70,game.getFrame(),0);
     ball = new Ball(u1/2,u2/2);
@@ -119,21 +116,39 @@ public PongPanelc(Pongc game) {
             //get data 
             System.out.println(DataSocC.getLocalPort());
            String modifiedSentence = new String(receivePacket.getData()); 
-           if(m==1){m1=modifiedSentence;}
-           else if(m==2){m2=modifiedSentence;}
-<<<<<<< HEAD
-           if(m==3){m3=modifiedSentence;
+           if(m==0){m1=modifiedSentence;}
+           else if(m==1){m2=modifiedSentence;}
+          if(m==2){m3=modifiedSentence;
                System.out.println("got m3");}
-=======
-           if(m==3){m3=modifiedSentence;}
->>>>>>> c9aa9f2cdc3ac74ef4cf978cc857b6139f242aec
            System.out.println("FROM SERVER:" + modifiedSentence); 
         
     }
     System.out.println(m3+"this is m3");
-    
+    int m4=Integer.parseInt(m3);
+    System.out.println(m4);
+     if(m4==0)
+     {
+     a=0;
+     b=1;
+     c=0;
+     d=0;
+     }
+     else if (m4==1)
+     {
+     a=0;
+     b=0;
+     c=1;
+     d=0;
+     }
+     else
      
-    
+     {
+     a=0;
+     b=0;
+     c=0;
+     d=1;
+     
+     }
     
        
     
