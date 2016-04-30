@@ -114,9 +114,9 @@ public PongPanelc(Pongc game) {
             //get data 
             System.out.println(DataSocC.getLocalPort());
            String modifiedSentence = new String(receivePacket.getData()); 
-           if(m==1){m1=modifiedSentence;}
-           else if(m==2){m2=modifiedSentence;}
-           if(m==3){m3=modifiedSentence;}
+           if(m==0){m1=modifiedSentence;}
+           else if(m==1){m2=modifiedSentence;}
+           if(m==2){m3=modifiedSentence;}
            System.out.println("FROM SERVER:" + modifiedSentence); 
         
     }
