@@ -19,7 +19,7 @@ public class Splash extends javax.swing.JFrame {
     public Splash() {
         
         initComponents();
-        float[] colorcomponents = new float [3];
+        
         this.getContentPane().setBackground(Color.blue);
         
     }
@@ -58,8 +58,9 @@ public class Splash extends javax.swing.JFrame {
         jLabel2.setLabelFor(jLabel1);
         jLabel2.setText("PONG NINJA");
 
-        jButton1.setBackground(new java.awt.Color(153, 0, 0));
+        jButton1.setBackground(new java.awt.Color(84, 255, 159));
         jButton1.setFont(new java.awt.Font("Rod", 1, 11)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(0, 0, 255));
         jButton1.setText("Play !!!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
