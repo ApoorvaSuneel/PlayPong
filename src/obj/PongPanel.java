@@ -80,7 +80,7 @@ public PongPanel(Pong game) {
     
     
     //get all the data of the clients to be playing the game in a loop and make a list.
-    int number=Integer.parseInt(ServerC.num);
+    int number=Integer.parseInt(ServerC1.num);
     for(int i=0;i<number;i++)
     {
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
@@ -105,7 +105,7 @@ public PongPanel(Pong game) {
     
     try {
         //add your data in the list
-        IPAddress=InetAddress.getByName(ServerC.ipaddress);
+        IPAddress=InetAddress.getByName(ServerC1.ipaddress);
     } catch (UnknownHostException ex) {
         Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
     }

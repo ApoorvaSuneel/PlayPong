@@ -55,6 +55,7 @@ public PongPanelc(Pongc game) {
     iplist=new ArrayList();
     portlist=new ArrayList();
     racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame(),1);
+    racket2=new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
     racket3=new Racket(0,(u2/2)-35,0,0,10,70,game.getFrame(),0);
     racket4=new Racket(u1-30,(u2/2)-35,0,0,10,70,game.getFrame(),0);
     ball = new Ball(u1/2,u2/2);
@@ -101,7 +102,7 @@ public PongPanelc(Pongc game) {
     
     //recive data from server and store in arralists
     String m1,m2,m3="";
-    for(int m=0;m<2;m++)
+    for(int m=0;m<3;m++)
     {
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
                
@@ -111,13 +112,15 @@ public PongPanelc(Pongc game) {
             Logger.getLogger(PongPanelc.class.getName()).log(Level.SEVERE, null, ex);
         }
             //get data 
+            System.out.println(DataSocC.getLocalPort());
            String modifiedSentence = new String(receivePacket.getData()); 
            if(m==1){m1=modifiedSentence;}
            else if(m==2){m2=modifiedSentence;}
            if(m==3){m3=modifiedSentence;}
-           System.out.println("FROM SERVER:" + modifiedSentence.trim()); 
+           System.out.println("FROM SERVER:" + modifiedSentence); 
         
     }
+    System.out.println(m3+"this is m3");
     
      
     
@@ -129,21 +132,8 @@ public PongPanelc(Pongc game) {
         
         
        // -----------------------assuming it does come
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        Timer timer = new Timer(5, new TimerHandler());
+
+       Timer timer = new Timer(5, new TimerHandler());
         //timer.setInitialDelay(10000);
         timer.setRepeats(false);
         //timer.start();
