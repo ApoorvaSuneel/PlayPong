@@ -45,11 +45,14 @@ public class ClientC extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(84, 255, 159));
         jLabel1.setText("Enter the IP of the Host");
 
+        jTextField1.setForeground(new java.awt.Color(0, 0, 255));
+
         jLabel2.setBackground(new java.awt.Color(0, 0, 255));
         jLabel2.setFont(new java.awt.Font("Lucida Fax", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(84, 255, 159));
         jLabel2.setText("Player no.");
 
+        jTextField2.setForeground(new java.awt.Color(0, 0, 255));
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField2ActionPerformed(evt);
