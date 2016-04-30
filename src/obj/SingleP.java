@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -98,6 +99,7 @@ private void checkCollisionBallRacket()
         ball.getBounds().x + ball.getWidth() > racket.getBounds().x &&
         racket.getBounds().x + racket.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
         //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
@@ -110,6 +112,7 @@ private void checkCollsionBallRacket2() {
         ball.getBounds().x + ball.getWidth() > racket2.getBounds().x &&
         racket2.getBounds().x + racket2.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score1++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
         //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
@@ -120,6 +123,7 @@ private void checkCollsionBallRacket3() {
         ball.getBounds().y + ball.getWidth() > racket3.getBounds().y &&
         racket3.getBounds().y + racket3.getHeight()> ball.getBounds().y) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score3++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
     }    
@@ -129,6 +133,7 @@ private void checkCollsionBallRacket4() {
         ball.getBounds().y + ball.getWidth() > racket4.getBounds().y &&
         racket4.getBounds().y + racket4.getHeight()> ball.getBounds().y) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score4++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score3)+"\n"+"\n"+"Player4 :"+Integer.toString(score4));
         //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));

@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -38,8 +39,10 @@ private Racket racket,racket2,racket3,racket4;
 private Ball ball;
 private int a=0,b=0,c=0,d=0;
 private String[] ee;
-private static ArrayList ip,portnum;
-private JLabel scoreLabel;                         //----------------------------------
+private static ArrayList<InetAddress> ip;
+private static int[] freq;
+private static ArrayList<Integer> portnum;
+private JLabel scoreLabel;  //----------------------------------
 private int score = 0,score1=0,score2=0,score3=0;
 //networking variables
 static DatagramSocket DataSoc;
@@ -51,6 +54,8 @@ public PongPanel(Pong game) {
    
     int u1=game.getFrame().getWidth();
     int u2=game.getFrame().getHeight();
+    ip=new ArrayList<InetAddress>();
+    portnum=new ArrayList<Integer>();
     racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame(),1);
     racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
     racket3=new Racket(0,(u2/2)-35,0,0,10,70,game.getFrame(),0);
@@ -80,9 +85,13 @@ public PongPanel(Pong game) {
     
     
     //get all the data of the clients to be playing the game in a loop and make a list.
-    int number=Integer.parseInt(ServerC.num);
-    for(int i=0;i<number;i++)
+    int number=Integer.parseInt(ServerC1.num);
+    freq=new int[number];
+    System.out.println(number);
+    int j=0;
+    while(j<number)
     {
+        System.out.println(j);
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
                
         try {
@@ -96,16 +105,20 @@ public PongPanel(Pong game) {
            System.out.println("FROM CLIENT:" + modifiedSentence); 
            //get ip add
            IPAddress=receivePacket.getAddress();
+           System.out.println(IPAddress.toString());
            ip.add(IPAddress);
+           System.out.println(ip.size());
            //get port
            port=receivePacket.getPort();
            portnum.add(port);
-    
+           j++;
+           System.out.println(j);
          }
+    System.out.println("for loop complete");
     
     try {
         //add your data in the list
-        IPAddress=InetAddress.getByName(ServerC.ipaddress);
+        IPAddress=InetAddress.getByName(ServerC1.ipaddress);
     } catch (UnknownHostException ex) {
         Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -119,7 +132,7 @@ public PongPanel(Pong game) {
     
     //read all the ipaddresses as stings
     String ipadd="";
-    for(Object d:ip)
+    for(InetAddress d:ip)
     {
         ipadd=ipadd+d.toString()+",";
     }
@@ -141,7 +154,8 @@ public PongPanel(Pong game) {
     {
         sdata = ipadd.getBytes();  //ipaddresses
         byte[] sdata1=ports.getBytes(); //ports
-        byte[] sdata2=Integer.toString(y).getBytes(); //player number
+        String str=Integer.toString(y);
+        byte[] sdata2=str.getBytes(); //player number
         //send to server only
          DatagramPacket sendPacket;
          DatagramPacket sendPacket1;   
@@ -153,13 +167,40 @@ public PongPanel(Pong game) {
             sendPacket1=new DatagramPacket(sdata1, sdata1.length, (InetAddress)ip.get(y), (int)portnum.get(y));
             sendPacket2=new DatagramPacket(sdata2, sdata2.length, (InetAddress)ip.get(y), (int)portnum.get(y));
         
-        try {
-            DataSoc.send(sendPacket);
-            DataSoc.send(sendPacket1);
-            DataSoc.send(sendPacket2);
-        } catch (IOException ex) {
-            Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            int u=0;
+                    while(u<3)
+                    {
+                        if(u==0)
+                        {   try {
+                            DataSoc.send(sendPacket);
+                                    System.out.println("port");
+                            } catch (IOException ex) {
+                                Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+}else if(u==1){             try {
+    DataSoc.send(sendPacket1);
+                            System.out.println("sent ip");
+                            } catch (IOException ex) {
+                                Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+}else{                      try {
+    DataSoc.send(sendPacket2);
+                            System.out.println(sdata2.toString());
+                            System.out.println("sent number");
+                            } catch (IOException ex) {
+                                Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+}
+                        
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PongPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            u++;
+                    }
+       
+        System.out.println("sent all the packets");
         
     }
     
@@ -186,9 +227,12 @@ private void update() {//--------------------------------
     checkCollisionBallSides();
     checkCollisionBallRacket();
     checkCollsionBallRacket2();
+    checkCollsionBallRacket3();
+    checkCollsionBallRacket4();
+    checkCollisionRacketRacket();
     repaint();
 }
-
+//------------------------------------------------check collisions
 private void checkCollisionBallSides() 
 {
     if (ball.getX() < 0 || ball.getX() > getWidth() - ball.getWidth() - (getInsets().left + getInsets().right))
@@ -211,6 +255,7 @@ private void checkCollisionBallRacket()
         ball.getBounds().x + ball.getWidth() > racket.getBounds().x &&
         racket.getBounds().x + racket.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
         //scoreLabel.setText(Integer.toString(score));
@@ -223,11 +268,53 @@ private void checkCollsionBallRacket2() {
         ball.getBounds().x + ball.getWidth() > racket2.getBounds().x &&
         racket2.getBounds().x + racket2.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score1++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
     }    
     }
 
+private void checkCollsionBallRacket3() {
+    if (ball.getBounds().x == racket3.getBounds().x+ + racket3.getWidth()&&
+        ball.getBounds().y + ball.getWidth() > racket3.getBounds().y &&
+        racket3.getBounds().y + racket3.getHeight()> ball.getBounds().y) {
+        ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
+        score2++;
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score2)+"\n"+"\n"+"Player4 :"+Integer.toString(score3));
+    }    
+    }
+private void checkCollsionBallRacket4() {
+    if (ball.getBounds().x +ball.getWidth()== racket4.getBounds().x &&
+        ball.getBounds().y + ball.getWidth() > racket4.getBounds().y &&
+        racket4.getBounds().y + racket4.getHeight()> ball.getBounds().y) {
+        ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
+        score3++;
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score2)+"\n"+"\n"+"Player4 :"+Integer.toString(score3));
+        //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
+    }    
+    }
+private void checkCollisionRacketRacket()
+{
+    if(racket2.getBounds().x+racket2.getWidth()>=racket4.getBounds().x && racket2.getBounds().y+racket2.getHeight()<racket4.getBounds().y)
+    {
+        racket2.setXA(0);
+    }
+    if(racket2.getBounds().x<=racket3.getBounds().x+racket3.getWidth() && racket2.getBounds().y+racket2.getHeight()<=racket3.getBounds().y+racket3.getWidth())
+    {
+        racket2.setXA(0);
+    }
+    if(racket3.getBounds().y+racket3.getHeight()>=racket.getBounds().y && racket3.getBounds().x+racket3.getWidth()>=racket.getBounds().x)
+    {
+        racket3.setYA(0);
+    }
+    if(racket4.getBounds().y+racket4.getHeight()>=racket.getY() && racket4.getBounds().x>=racket.getX()+racket.getWidth())
+    {
+        racket4.setYA(0);
+    }
+    
+}
 
 @Override
 public void paint(Graphics g) {
@@ -247,7 +334,7 @@ private class KeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         System.out.println("key pressed");
-        if(a==1 && b==0)
+        if(a==1 && b==0 && c==0 && d==0)
         {
             System.out.println("cond true");
         racket.pressed(e);    
@@ -298,6 +385,12 @@ private class TimerHandler implements ActionListener {
     private String[] receive()
     {       
         
+        //simulateaneously check if u-you can receive packet from all the clients
+        
+        
+        
+        
+        
         DatagramPacket receivePacket = new DatagramPacket(rdata, rdata.length); 
                
         try {
@@ -310,6 +403,19 @@ private class TimerHandler implements ActionListener {
            System.out.println("FROM CLIENT:" + modifiedSentence); 
            IPAddress = receivePacket.getAddress();
             port = receivePacket.getPort(); 
+            
+            //check if port present in arraylist
+            //if yes then add some freq in new array at that point
+            //check the numbers in the array after every 5sec 
+            //if 0 at some point then remove that particular index
+            //change the freq to zero again
+            if(portnum.contains(port))
+            {
+            int mw=portnum.indexOf(port);
+            freq[mw]=freq[mw]+1;
+            }
+            //run a process parallely after every 5 secs
+            
             String[] h =new String[3];
             h[0]=modifiedSentence;
             h[1]=IPAddress.toString();
@@ -330,7 +436,10 @@ private class TimerHandler implements ActionListener {
                            System.out.println("t2 strated");
                         while(true)
                         {
+                            
              update();
+             //removal of data
+             
                          //racket data 
          int x1=racket.getX();
          int y1=racket.getY();
@@ -392,12 +501,10 @@ private class TimerHandler implements ActionListener {
             racket3.setY(Integer.parseInt(ee[13]));
             racket4.setY(Integer.parseInt(ee[17]));
             int c,d=0;
-            //chance
-            //a2=Integer.parseInt(ee[12]);
-            //b2=Integer.parseInt(ee[13].trim());
             //ball posiitons
             int a1=Integer.parseInt(ee[0]);
-            int b1=Integer.parseInt(ee[1]);           
+            int b1=Integer.parseInt(ee[1]); 
+            //set ball speeds
             if(ee[2].charAt(0)=='-')
             {    
                 c=(-1)*Integer.parseInt(ee[2].substring(1));
@@ -420,6 +527,28 @@ private class TimerHandler implements ActionListener {
             ball.setY(b1);
             ball.setXA(c);
             ball.setYA(d);
+            
+            //updates for AI from number of players left....hence -----------------------------------
+            //remove the player from the list if no response
+            int f=ip.size();
+            if(f==1)
+            {
+             racket3.setCompu(ball, 0,3);
+            racket4.setCompu(ball, 0,4);  
+            }
+            else if(f==2)
+                    {
+                    racket4.setCompu(ball, 0,4);  
+                    }
+            else
+            {
+             racket2.setCompu(ball, 1,2);
+             racket3.setCompu(ball, 0,3);
+            racket4.setCompu(ball, 0,4);  
+            }
+            
+           
+            
             update();
                         }
                      

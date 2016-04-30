@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -52,9 +53,10 @@ public PongPanelc(Pongc game) {
     
       int u1=game.getFrame().getWidth();
     int u2=game.getFrame().getHeight();
-    iplist=new ArrayList();
-    portlist=new ArrayList();
+    iplist=new ArrayList<InetAddress>();
+    portlist=new ArrayList<Integer>();  
     racket = new Racket((u1/2)-35,u2-50,1,1,70,10,game.getFrame(),1);
+    racket2 = new Racket((u1/2)-35,0,0,0,70,10,game.getFrame(),1);
     racket3=new Racket(0,(u2/2)-35,0,0,10,70,game.getFrame(),0);
     racket4=new Racket(u1-30,(u2/2)-35,0,0,10,70,game.getFrame(),0);
     ball = new Ball(u1/2,u2/2);
@@ -114,8 +116,9 @@ public PongPanelc(Pongc game) {
            String modifiedSentence = new String(receivePacket.getData()); 
            if(m==1){m1=modifiedSentence;}
            else if(m==2){m2=modifiedSentence;}
-           if(m==3){m3=modifiedSentence;}
-           System.out.println("FROM SERVER:" + modifiedSentence.trim()); 
+           if(m==3){m3=modifiedSentence;
+               System.out.println("got m3");}
+           System.out.println("FROM SERVER:" + modifiedSentence); 
         
     }
     
@@ -157,13 +160,16 @@ public PongPanelc(Pongc game) {
 
 private void update() {
     racket.updatePosition();
-    racket3.updatePosition();
-    racket4.updatePosition();
+    racket3.updatePosition1();
+    racket4.updatePosition1();
     racket2.updatePosition();
     ball.updatePosition();
     checkCollisionBallSides();
     checkCollisionBallRacket();
     checkCollisionBallRacket2();
+    checkCollsionBallRacket3();
+    checkCollsionBallRacket4();
+    checkCollisionRacketRacket();
     repaint();
 }
 //----------------------------------------------------------------extra collisions
@@ -187,6 +193,7 @@ private void checkCollisionBallRacket() {
         ball.getBounds().x + ball.getWidth() > racket.getBounds().x &&
         racket.getBounds().x + racket.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score++;
         scoreLabel.setText(Integer.toString(score));
     }
@@ -207,10 +214,52 @@ public void paint(Graphics g) {
         ball.getBounds().x + ball.getWidth() > racket2.getBounds().x &&
         racket2.getBounds().x + racket2.getWidth() > ball.getBounds().x) {
         ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
         score1++;
         scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
     }    
     }
+    private void checkCollsionBallRacket3() {
+    if (ball.getBounds().x == racket3.getBounds().x+ + racket3.getWidth()&&
+        ball.getBounds().y + ball.getWidth() > racket3.getBounds().y &&
+        racket3.getBounds().y + racket3.getHeight()> ball.getBounds().y) {
+        ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
+        score2++;
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score2)+"\n"+"\n"+"Player4 :"+Integer.toString(score3));
+    }    
+    }
+private void checkCollsionBallRacket4() {
+    if (ball.getBounds().x +ball.getWidth()== racket4.getBounds().x &&
+        ball.getBounds().y + ball.getWidth() > racket4.getBounds().y &&
+        racket4.getBounds().y + racket4.getHeight()> ball.getBounds().y) {
+        ball.setYA(-ball.getYA());
+        Toolkit.getDefaultToolkit().beep();
+        score3++;
+        scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"\n"+"Player2 :"+Integer.toString(score1)+"\n"+"\n"+"Player3 :"+Integer.toString(score2)+"\n"+"\n"+"Player4 :"+Integer.toString(score3));
+        //scoreLabel.setText("Player1 : "+Integer.toString(score)+"\n"+"Player2 :"+Integer.toString(score1));
+    }    
+    }
+private void checkCollisionRacketRacket()
+{
+    if(racket2.getBounds().x+racket2.getWidth()>=racket4.getBounds().x && racket2.getBounds().y+racket2.getHeight()<racket4.getBounds().y)
+    {
+        racket2.setXA(0);
+    }
+    if(racket2.getBounds().x<=racket3.getBounds().x+racket3.getWidth() && racket2.getBounds().y+racket2.getHeight()<=racket3.getBounds().y+racket3.getWidth())
+    {
+        racket2.setXA(0);
+    }
+    if(racket3.getBounds().y+racket3.getHeight()>=racket.getBounds().y && racket3.getBounds().x+racket3.getWidth()>=racket.getBounds().x)
+    {
+        racket3.setYA(0);
+    }
+    if(racket4.getBounds().y+racket4.getHeight()>=racket.getY() && racket4.getBounds().x>=racket.getX()+racket.getWidth())
+    {
+        racket4.setYA(0);
+    }
+    
+}
 
 
     

@@ -194,7 +194,7 @@ public class GameMenu extends javax.swing.JFrame {
     }
 
     private void changeB2() {
-         new ServerC().setVisible(true);
+         new ServerC1().setVisible(true);
          this.setVisible(false);
         
     }
